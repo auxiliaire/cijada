@@ -1,0 +1,23 @@
+﻿<Properties GitUserInfo="UsingGIT">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Draw/CAForm.cs">
+    <Files>
+      <File FileName="Draw/CAForm.cs" Line="2" Column="2" />
+      <File FileName="Draw/Engine/Calc.cs" Line="1" Column="1" />
+      <File FileName="Draw/Engine/Controller.cs" Line="1" Column="1" />
+      <File FileName="Draw/Model/Settings.cs" Line="1" Column="1" />
+      <File FileName="Draw/Model/Serializer/SSettings.cs" Line="1" Column="1" />
+      <File FileName="Draw/Gfx/Palette/GradientEditor/GradientStop.cs" Line="1" Column="1" />
+      <File FileName="Draw/Gfx/Palette/GradientEditor.cs" Line="1" Column="1" />
+      <File FileName="Draw/Engine/Space.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <AuthorInfo Name="Viktor Daróczi" Email="viktor.daroczi@gmail.com" Copyright="Viktor Daróczi" />
+</Properties>

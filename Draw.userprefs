@@ -1,0 +1,35 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Draw/PrintableForm.cs">
+    <Files>
+      <File FileName="Draw/PrintableForm.cs" Line="16" Column="22" />
+      <File FileName="Timer/timer.cs" Line="1" Column="1" />
+      <File FileName="Draw/ColorInterpolator.cs" Line="49" Column="13" />
+      <File FileName="Draw/FastLoop.cs" Line="10" Column="37" />
+      <File FileName="Draw/PaletteMap.cs" Line="13" Column="42" />
+      <File FileName="Draw/PaletteMap/ColorStop.cs" Line="1" Column="14" />
+      <File FileName="Draw/PaletteMap/MiddlePoint.cs" Line="11" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Draw" expanded="True">
+            <Node name="PaletteMap" expanded="True" />
+            <Node name="PrintableForm.cs" selected="True" />
+          </Node>
+          <Node name="Timer" expanded="True" />
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

@@ -7,3 +7,9 @@ The application calculates next-generation cell values in realtime so that it's 
 
 Screenshot of the application running on linux mono/wine:
 ![Screenshot](https://raw.githubusercontent.com/auxiliaire/cijada/master/Screenshot_20170628_220856.png)
+
+Screenshot of the application running on Windows 10 (2018):
+![Screenshot Windows](https://raw.githubusercontent.com/auxiliaire/cijada/master/Cijada-2018-Win10.png)
+
+Screenshot of the application running on MacOS High Sierra (2018):
+![Screenshot Windows](https://raw.githubusercontent.com/auxiliaire/cijada/master/Cijada-Mac-2018.png)

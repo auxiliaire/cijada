@@ -9,9 +9,11 @@ class TimerDemo:Form
 
   public TimerDemo()
   {
-    Clock=new Timer();
-    Clock.Interval=1000;
-    Clock.Start();
+        Clock = new Timer
+        {
+            Interval = 1000
+        };
+        Clock.Start();
     Clock.Tick+=new EventHandler(Timer_Tick);
 
     this.Controls.Add(lbTime);

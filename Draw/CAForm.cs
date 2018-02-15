@@ -1,17 +1,13 @@
 using System;
 using System.Drawing;
-using System.Drawing.Printing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using CA.Engine;
-using CA.Gfx;
 using CA.Gfx.Palette.GradientEditor;
+using System.Reflection;
 
+[assembly: AssemblyVersionAttribute("0.0.0.1")]
 namespace CA {
 
 	class CAForm: Form {
@@ -21,7 +17,7 @@ namespace CA {
 		private const int HEIGHT = 542;
 		private int SP_WIDTH = 640;
 		private int SP_HEIGHT = 480;
-		//private int PANEL_SPACE = 8; // git teszt
+		//private int PANEL_SPACE = 8;
 		private StatusBar sb;
 		private string generations = "";
 		private Button startButton;
@@ -31,10 +27,11 @@ namespace CA {
 		private GroupBox crmGB;
 		private	CellRelationCheckBox[,] crmCB;
 		private GradientEditor gedit;
-	
-		//static FastLoop _fastLoop = new FastLoop(AnimLoop);
-		
-		public static void Main() {
+
+        //static FastLoop _fastLoop = new FastLoop(AnimLoop);
+
+        [STAThread]
+        public static void Main() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 	        Application.Run(new CAForm());
@@ -52,36 +49,40 @@ namespace CA {
 	        } catch (Exception) {
 			    bm = CreateBitmap(SP_WIDTH, SP_HEIGHT);
 	        }
-			// Creating palette
-			//Gfx.Palette.Map paletteMap = new Gfx.Palette.Map();
-	
-			//paletteMap.setColorStop(0, new Gfx.Palette.ColorStop(0, Color.White));
-			//paletteMap.setColorStop(3, new Gfx.Palette.ColorStop(3, Color.LightSteelBlue)); // Color.Yellow));
-			//paletteMap.setColorStop(10, new Gfx.Palette.ColorStop(10, Color.SteelBlue)); // Color.Lime));
-			//paletteMap.setColorStop(95, new Gfx.Palette.ColorStop(99, Color.DarkBlue)); //.SaddleBrown));
-			//paletteMap.setColorStop(100, new Gfx.Palette.ColorStop(100, Color.DarkTurquoise));
-	
-			//paletteMap.setColorStop(0, new Gfx.Palette.GradientEditor.GradientStop(Color.White, 0));
-			//paletteMap.setColorStop(3, new Gfx.Palette.GradientEditor.GradientStop(Color.LightSteelBlue, 3)); // Color.Yellow));
-			//paletteMap.setColorStop(10, new Gfx.Palette.GradientEditor.GradientStop(Color.SteelBlue, 10)); // Color.Lime));
-			//paletteMap.setColorStop(95, new Gfx.Palette.GradientEditor.GradientStop(Color.DarkBlue, 99)); //.SaddleBrown));
-			//paletteMap.setColorStop(100, new Gfx.Palette.GradientEditor.GradientStop(Color.DarkTurquoise, 100));
-	
-			//paletteMap.setColorStop(0, new ColorStop(0, Color.Yellow));
-			//paletteMap.setColorStop(10, new ColorStop(10, Color.Lime));
-			//paletteMap.setColorStop(80, new ColorStop(85, Color.DarkRed));
-			//paletteMap.setColorStop(100, new ColorStop(100, Color.SaddleBrown));
-	
-			Panel p = new TableLayoutPanel();
-			p.Width = ClientSize.Width - bm.Width;
-			p.Padding = new Padding(5);
-			p.Dock = DockStyle.Right;
-			p.Parent = this;
-	
-			//GradientEditor gedit = new GradientEditor(paletteMap);
-			gedit = new GradientEditor();
-			gedit.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-			gedit.setColorStop(new Gfx.Palette.GradientEditor.GradientStop(Color.White, 0));
+            // Creating palette
+            //Gfx.Palette.Map paletteMap = new Gfx.Palette.Map();
+
+            //paletteMap.setColorStop(0, new Gfx.Palette.ColorStop(0, Color.White));
+            //paletteMap.setColorStop(3, new Gfx.Palette.ColorStop(3, Color.LightSteelBlue)); // Color.Yellow));
+            //paletteMap.setColorStop(10, new Gfx.Palette.ColorStop(10, Color.SteelBlue)); // Color.Lime));
+            //paletteMap.setColorStop(95, new Gfx.Palette.ColorStop(99, Color.DarkBlue)); //.SaddleBrown));
+            //paletteMap.setColorStop(100, new Gfx.Palette.ColorStop(100, Color.DarkTurquoise));
+
+            //paletteMap.setColorStop(0, new Gfx.Palette.GradientEditor.GradientStop(Color.White, 0));
+            //paletteMap.setColorStop(3, new Gfx.Palette.GradientEditor.GradientStop(Color.LightSteelBlue, 3)); // Color.Yellow));
+            //paletteMap.setColorStop(10, new Gfx.Palette.GradientEditor.GradientStop(Color.SteelBlue, 10)); // Color.Lime));
+            //paletteMap.setColorStop(95, new Gfx.Palette.GradientEditor.GradientStop(Color.DarkBlue, 99)); //.SaddleBrown));
+            //paletteMap.setColorStop(100, new Gfx.Palette.GradientEditor.GradientStop(Color.DarkTurquoise, 100));
+
+            //paletteMap.setColorStop(0, new ColorStop(0, Color.Yellow));
+            //paletteMap.setColorStop(10, new ColorStop(10, Color.Lime));
+            //paletteMap.setColorStop(80, new ColorStop(85, Color.DarkRed));
+            //paletteMap.setColorStop(100, new ColorStop(100, Color.SaddleBrown));
+
+            Panel p = new TableLayoutPanel
+            {
+                Width = ClientSize.Width - bm.Width,
+                Padding = new Padding(5),
+                Dock = DockStyle.Right,
+                Parent = this
+            };
+
+            //GradientEditor gedit = new GradientEditor(paletteMap);
+            gedit = new GradientEditor
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            gedit.setColorStop(new Gfx.Palette.GradientEditor.GradientStop(Color.White, 0));
 			gedit.setColorStop(new Gfx.Palette.GradientEditor.GradientStop(Color.LightSteelBlue, 3)); // Color.Yellow));
 			gedit.setColorStop(new Gfx.Palette.GradientEditor.GradientStop(Color.SteelBlue, 10)); // Color.Lime));
 			gedit.setColorStop(new Gfx.Palette.GradientEditor.GradientStop(Color.DarkBlue, 95)); //.SaddleBrown));
@@ -94,61 +95,75 @@ namespace CA {
 			Graphics gf = CreateGraphics();
 			gf.DrawImageUnscaled(caController.Surface, 0, 0);
 
-			//Bitmap shade = new Bitmap(ClientSize.Width, 50);
-			//Graphics g = Graphics.FromImage(shade);
-			//Brush b = new SolidBrush(Color.FromArgb(20, 200, 200, 200));
-			//gf.FillRectangle(b, new Rectangle(0, 0, ClientSize.Width, 50));
-			//g.DrawImageUnscaled(shade, 0, 0);
-			//g.Dispose();
-			//Graphics gs = CreateGraphics();
-			//gf.DrawImageUnscaled(shade, 0, 0);
-	
-			startButton = new Button();
-	        startButton.Text = "Start";
-			startButton.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-	        startButton.Click += new EventHandler(OnStartClick);
+            //Bitmap shade = new Bitmap(ClientSize.Width, 50);
+            //Graphics g = Graphics.FromImage(shade);
+            //Brush b = new SolidBrush(Color.FromArgb(20, 200, 200, 200));
+            //gf.FillRectangle(b, new Rectangle(0, 0, ClientSize.Width, 50));
+            //g.DrawImageUnscaled(shade, 0, 0);
+            //g.Dispose();
+            //Graphics gs = CreateGraphics();
+            //gf.DrawImageUnscaled(shade, 0, 0);
+
+            startButton = new Button
+            {
+                Text = "Start",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            startButton.Click += new EventHandler(OnStartClick);
 			startButton.Parent = p;
-	
-			Button randomButton = new Button();
-	        randomButton.Text = "Randomize";
-			randomButton.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-	        randomButton.Click += new EventHandler(OnRandomClick);
+
+            Button randomButton = new Button
+            {
+                Text = "Randomize",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            randomButton.Click += new EventHandler(OnRandomClick);
 			randomButton.Parent = p;
-	
-			Button resetButton = new Button();
-	        resetButton.Text = "Reset";
-			resetButton.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-	        resetButton.Click += new EventHandler(OnResetClick);
+
+            Button resetButton = new Button
+            {
+                Text = "Reset",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            resetButton.Click += new EventHandler(OnResetClick);
 			resetButton.Parent = p;
-	
-			crmGB = new GroupBox();
-			crmGB.Text = "Cell relations";
-			crmGB.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-			crmGB.Width = p.Width - 20;
-			crmGB.Parent = p;
-	
-			crmCB = new CellRelationCheckBox[3, 3];
+
+            crmGB = new GroupBox
+            {
+                Text = "Cell relations",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                Width = p.Width - 20,
+                Parent = p
+            };
+
+            crmCB = new CellRelationCheckBox[3, 3];
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
 					if (!(i == 1 && j == 1)) {
-						crmCB[i, j] = new CellRelationCheckBox(i, j);
-						crmCB[i, j].Location = new Point(j * 20 + 20, i * 20 + 20);
-						crmCB[i, j].Width = 20;
-						crmCB[i, j].Checked = caController.Calc.sm[i, j];
-						crmCB[i, j].CheckedChanged += new EventHandler(OnCrmCBChanged);
+                        crmCB[i, j] = new CellRelationCheckBox(i, j)
+                        {
+                            Location = new Point(j * 20 + 20, i * 20 + 20),
+                            Width = 20,
+                            Checked = caController.Calc.sm[i, j]
+                        };
+                        crmCB[i, j].CheckedChanged += new EventHandler(OnCrmCBChanged);
 						crmCB[i, j].Parent = crmGB;
 					}
 				}
 			}
 
-			Label livLabel = new Label();
-	        livLabel.Text = "Create cells on:";
-	        livLabel.AutoSize = true;
-	        livLabel.Parent = p;
-	
-	        livTB = new TextBox();
-			livTB.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-	        livTB.KeyUp += new KeyEventHandler(OnKeyUp);
+            Label livLabel = new Label
+            {
+                Text = "Create cells on:",
+                AutoSize = true,
+                Parent = p
+            };
+
+            livTB = new TextBox
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            livTB.KeyUp += new KeyEventHandler(OnKeyUp);
 			livTB.Name = "livTB";
 			RefreshLivDthTB(livTB);
 			livTB.Validating += OnLivDthTextValidating;
@@ -157,14 +172,18 @@ namespace CA {
 			ToolTip livTT = new ToolTip();
 	        livTT.SetToolTip(livTB, "Comma separated numbers of neighboring cells that makes an empty space filled (eg: 0,3,5,8).");
 
-			Label dthLabel = new Label();
-	        dthLabel.Text = "Destroy cells on:";
-	        dthLabel.AutoSize = true;
-	        dthLabel.Parent = p;
+            Label dthLabel = new Label
+            {
+                Text = "Destroy cells on:",
+                AutoSize = true,
+                Parent = p
+            };
 
-	        dthTB = new TextBox();
-			dthTB.Anchor = AnchorStyles.Left | AnchorStyles.Right;
-	        dthTB.KeyUp += new KeyEventHandler(OnKeyUp);
+            dthTB = new TextBox
+            {
+                Anchor = AnchorStyles.Left | AnchorStyles.Right
+            };
+            dthTB.KeyUp += new KeyEventHandler(OnKeyUp);
 			dthTB.Name = "dthTB";
 			RefreshLivDthTB(dthTB);
 			dthTB.Validating += OnLivDthTextValidating;
@@ -173,64 +192,82 @@ namespace CA {
 			ToolTip dthTT = new ToolTip();
 	        dthTT.SetToolTip(dthTB, "Comma separated numbers of neighboring cells that makes a filled space empty (eg: 0,1,4,8).");
 
-			ageingCB = new CheckBox();
-	        ageingCB.Location = new Point(10, 40);
-	        ageingCB.Text = "Ageing";
-	        ageingCB.Checked = true;
-	        ageingCB.Parent = p;
-			ageingCB.CheckedChanged += new EventHandler(OnAgeingCBChanged);
-	
-			Label geditLabel = new Label();
-	        geditLabel.Text = "Colors of ageing:";
-	        geditLabel.Location = new Point(10, 280);
-	        geditLabel.AutoSize = true;
-	        geditLabel.Parent = p;
-	
-			gedit.Parent = p;
-	
-			Button saveImg = new Button();
-			saveImg.Text = "Export image...";
-			saveImg.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-			saveImg.Click += new EventHandler(OnSaveImgClick);
+            ageingCB = new CheckBox
+            {
+                Location = new Point(10, 40),
+                Text = "Ageing",
+                Checked = true,
+                Parent = p
+            };
+            ageingCB.CheckedChanged += new EventHandler(OnAgeingCBChanged);
+
+            Label geditLabel = new Label
+            {
+                Text = "Colors of ageing:",
+                Location = new Point(10, 280),
+                AutoSize = true,
+                Parent = p
+            };
+
+            gedit.Parent = p;
+
+            Button saveImg = new Button
+            {
+                Text = "Export image...",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            saveImg.Click += new EventHandler(OnSaveImgClick);
 			saveImg.Parent = p;
 
-			Button loadImg = new Button();
-			loadImg.Text = "Import image...";
-			loadImg.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-			loadImg.Click += new EventHandler(OnLoadImgClick);
+            Button loadImg = new Button
+            {
+                Text = "Import image...",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            loadImg.Click += new EventHandler(OnLoadImgClick);
 			loadImg.Parent = p;
 
-			Button saveSettings = new Button();
-			saveSettings.Text = "Save config...";
-			saveSettings.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-			saveSettings.Click += new EventHandler(OnSaveSettingsClick);
+            Button saveSettings = new Button
+            {
+                Text = "Save config...",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            saveSettings.Click += new EventHandler(OnSaveSettingsClick);
 			saveSettings.Parent = p;
 
-			Button loadSettings = new Button();
-			loadSettings.Text = "Load config...";
-			loadSettings.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-			loadSettings.Click += new EventHandler(OnLoadSettingsClick);
+            Button loadSettings = new Button
+            {
+                Text = "Load config...",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            loadSettings.Click += new EventHandler(OnLoadSettingsClick);
 			loadSettings.Parent = p;
 
-			tmr = new Timer();
-			tmr.Enabled = false;
-			tmr.Interval = 50;
-			tmr.Tick += new EventHandler(HandleTick);
+            tmr = new Timer
+            {
+                Enabled = false,
+                Interval = 50
+            };
+            tmr.Tick += new EventHandler(HandleTick);
 			if (!caController.Calc.GradientTest) {
 				//tmr.Start();
 			}
-	
-			Button quitButton = new Button();
-	        quitButton.Text = "Quit";
-			quitButton.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom;
-			//quitButton.Dock = DockStyle.Top;
-	        quitButton.Click += new EventHandler(OnQuitClick);
+
+            Button quitButton = new Button
+            {
+                Text = "Quit",
+                Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
+            };
+            //quitButton.Dock = DockStyle.Top;
+            quitButton.Click += new EventHandler(OnQuitClick);
 			quitButton.Parent = p;
-	
-			sb = new StatusBar();
-			sb.Text = "Generations: 0";
-			sb.Parent = this;
-			caController.Calc.PropertyChanged += new PropertyChangedEventHandler(OnGenerationsChanged);
+
+            sb = new StatusBar
+            {
+                Text = "Generations: 0",
+                Parent = this
+            };
+            caController.Calc.PropertyChanged += new PropertyChangedEventHandler(OnGenerationsChanged);
 	
 	        //Controls.Add();
 	        CenterToScreen();
@@ -330,11 +367,13 @@ namespace CA {
 		}
 	
 		public void OnSaveImgClick(object sender, EventArgs e) {
-			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Title = "Save file as...";
-			dialog.Filter = "JPeg Image|*.jpg|Png Image|*.png|Bitmap Image|*.bmp|Gif Image|*.gif";
-			dialog.RestoreDirectory = true;
-			dialog.ShowDialog();
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Title = "Save file as...",
+                Filter = "JPeg Image|*.jpg|Png Image|*.png|Bitmap Image|*.bmp|Gif Image|*.gif",
+                RestoreDirectory = true
+            };
+            dialog.ShowDialog();
 
 			if (dialog.FileName != "") {
 				// Saves the Image via a FileStream created by the OpenFile method.
@@ -359,31 +398,37 @@ namespace CA {
 		}
 
 		public void OnSaveSettingsClick(object sender, EventArgs e) {
-			SaveFileDialog dialog = new SaveFileDialog();
-			dialog.Title = "Save config as...";
-			dialog.Filter = "CA configuration|*.cac";
-			dialog.RestoreDirectory = true;
+            SaveFileDialog dialog = new SaveFileDialog
+            {
+                Title = "Save config as...",
+                Filter = "CA configuration|*.cac",
+                RestoreDirectory = true
+            };
 
-			if (dialog.ShowDialog() == DialogResult.OK && dialog.FileName != "") {
-				CA.Model.Settings config = new CA.Model.Settings();
-				config.Senescence = caController.Calc.senescence;
-				config.CellRelation = caController.Calc.sm;
-				config.RuleLife = caController.Calc.liv;
-				config.RuleDeath = caController.Calc.dth;
-				config.GradientMap = gedit.getMap();
+            if (dialog.ShowDialog() == DialogResult.OK && dialog.FileName != "") {
+                CA.Model.Settings config = new CA.Model.Settings
+                {
+                    Senescence = caController.Calc.senescence,
+                    CellRelation = caController.Calc.sm,
+                    RuleLife = caController.Calc.liv,
+                    RuleDeath = caController.Calc.dth,
+                    GradientMap = gedit.getMap()
+                };
 
-				CA.Model.Serializer.SSettings serializer = new CA.Model.Serializer.SSettings();
+                CA.Model.Serializer.SSettings serializer = new CA.Model.Serializer.SSettings();
 				serializer.SerializeObject(dialog.FileName, config);
 			}
 		}
 
 		public void OnLoadSettingsClick(object sender, EventArgs e) {
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Title = "Select config to load";
-			dialog.Filter = "CA configuration|*.cac";
-			dialog.RestoreDirectory = true;
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = "Select config to load",
+                Filter = "CA configuration|*.cac",
+                RestoreDirectory = true
+            };
 
-			if (dialog.ShowDialog() == DialogResult.OK) {
+            if (dialog.ShowDialog() == DialogResult.OK) {
 				startButton.Text = "Start";
 	            tmr.Stop();
 				gedit.Enabled = true;
@@ -402,7 +447,7 @@ namespace CA {
 					RefreshLivDthTB(livTB);
 					RefreshLivDthTB(dthTB);
 					gedit.setMap(config.GradientMap);
-				} catch (Exception ex) {
+				} catch (Exception) {
 					MessageBox.Show("Could not load config (corrupted file?).");
 					_resetCA();
 				}
@@ -410,14 +455,16 @@ namespace CA {
 		}
 
 		public void OnLoadImgClick(object sender, EventArgs e) {
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Title = "Choose image file to import";
-			dialog.Filter = "JPeg Image|*.jpg|Png Image|*.png|Bitmap Image|*.bmp|Gif Image|*.gif";
-			dialog.RestoreDirectory = true;
+            OpenFileDialog dialog = new OpenFileDialog
+            {
+                Title = "Choose image file to import",
+                Filter = "JPeg Image|*.jpg|Png Image|*.png|Bitmap Image|*.bmp|Gif Image|*.gif",
+                RestoreDirectory = true
+            };
 
-			if (dialog.ShowDialog() == DialogResult.OK) {
+            if (dialog.ShowDialog() == DialogResult.OK) {
 				Bitmap bm = LoadBitmap(dialog.FileName);
-				caController.loadSurface(bm);
+				caController.LoadSurface(bm);
 				Graphics gf = CreateGraphics();
 				gf.DrawImageUnscaled(caController.Surface, 0, 0);
 				gf.Dispose();
@@ -494,7 +541,7 @@ namespace CA {
 	          //ptLast = new Point(mea.X, mea.Y);
 			//System.Console.WriteLine("x = " + mea.X.ToString() + ", y= " + mea.Y.ToString());
 	         caController.drawing = true;
-			caController.addCells(new Point(mea.X, mea.Y));
+			caController.AddCells(new Point(mea.X, mea.Y));
 	     }
 		
 		protected void HandleTick (object sender, EventArgs e) {
@@ -509,7 +556,7 @@ namespace CA {
 	     protected override void OnMouseMove(MouseEventArgs mea) {
 	          if (!caController.drawing)
 	               return;
-			caController.addCells(new Point(mea.X, mea.Y));
+			caController.AddCells(new Point(mea.X, mea.Y));
 			Graphics gf = CreateGraphics();
 			gf.DrawImageUnscaled(caController.Surface, 0, 0);
 	    }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using CA.Gfx;
 using CA.Gfx.Palette;
 
+
 namespace CA.Engine
 {
 	public class Controller
@@ -20,8 +21,8 @@ namespace CA.Engine
 		public int mX = -1;
 		public int mY = -1;
 
-		//public Controller (Bitmap bm, int w, int h, Map paletteMap)
-		public Controller (Bitmap bm, int w, int h, List<Gfx.Palette.GradientEditor.GradientStop> paletteMap)
+        //public Controller (Bitmap bm, int w, int h, Map paletteMap)
+        public Controller (Bitmap bm, int w, int h, List<Gfx.Palette.GradientEditor.GradientStop> paletteMap)
 		{
 			Surface = bm;
 			maxLength = w * h;
@@ -45,7 +46,7 @@ namespace CA.Engine
 			// Here it ends
 		}
 
-		public void loadSurface (Bitmap bm) {
+		public void LoadSurface (Bitmap bm) {
 			Surface = bm;
 			maxLength = bm.Width * bm.Height;
 			// Here it starts
@@ -57,7 +58,7 @@ namespace CA.Engine
 			Space s = new Space(bm.Width, bm.Height);
 		    // Use the Marshal class to copy image data
 		    Marshal.Copy(lockData.Scan0, s.Cells, 0, maxLength);
-			Calc.setSpace(s);
+			Calc.SetSpace(s);
 		    // Copy image data back
 		    Marshal.Copy(s.Cells, 0, lockData.Scan0, maxLength);
 		    // Unlock image
@@ -65,7 +66,7 @@ namespace CA.Engine
 			// Here it ends
 		}
 		
-		public void addCells(Point p) {
+		public void AddCells(Point p) {
 			int pos = Surface.Width * p.Y + p.X;
 			if ((pos >= 0) && (pos < maxLength)) {
 				Graphics g = Graphics.FromImage(Surface);
@@ -101,7 +102,7 @@ namespace CA.Engine
 		    // Use the Marshal class to copy image data
 		    Marshal.Copy(lockData.Scan0, Calc.Space.Cells, 0, maxLength);
 			
-			Calc.proceed();
+			Calc.Proceed();
 			
 		    // Copy image data back
 		    Marshal.Copy(Calc.Space.Cells, 0, lockData.Scan0, maxLength);

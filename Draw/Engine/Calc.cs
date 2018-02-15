@@ -34,7 +34,7 @@ namespace CA.Engine
 		public Calc (Space s)
 		{
 			Space = s;
-			init();
+			Init();
 		}
 		
 		public Calc (Space s, Color alive, Color dead)
@@ -42,30 +42,30 @@ namespace CA.Engine
 			Space = s;
 			cAlive = alive;
 			cDead = dead;
-			init();
+			Init();
 		}
 		
 		public Calc (Space s, Color[] p)
 		{
 			Space = s;
 			palette = p;
-			init();
+			Init();
 		}
 		
 		//public Calc (Space s, Gfx.Palette.Map m)
 		public Calc (Space s, List<Gfx.Palette.GradientEditor.GradientStop> m)
 		{
 			Space = s;
-			initPalette(m);
-			init();
+			InitPalette(m);
+			Init();
 		}
 
-		public void setSpace (Space s) {
+		public void SetSpace (Space s) {
 			Space = s;
-			init();
+			Init();
 		}
 
-		private void initPalette(List<Gfx.Palette.GradientEditor.GradientStop> m) {
+		private void InitPalette(List<Gfx.Palette.GradientEditor.GradientStop> m) {
 			palette = new Color[ageToDie];
 			double ratio = 100.0f / ageToDie;
 			//int stops = m.getMap().Count;
@@ -108,20 +108,20 @@ namespace CA.Engine
 			}
 		}
 
-		private void init() {
+		private void Init() {
 			cAlive = palette[0];
 			cDead = Color.Black;
-			generateIntColors();
-			initializeSenescence();
+			GenerateIntColors();
+			InitializeSenescence();
 		}
 		
-		private void generateIntColors() {
+		private void GenerateIntColors() {
 			// Colors to ints for faster calculation:
 			ca = cAlive.ToArgb();
 			cd = cDead.ToArgb();
 		}
 		
-		protected void initializeSenescence() {
+		protected void InitializeSenescence() {
 			// Create gradients for senescence
 			if (senescence) {
 				int newBorn = Color.White.ToArgb();
@@ -171,10 +171,7 @@ namespace CA.Engine
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void OnPropertyChanged(string info) {
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null) {
-				handler(this, new PropertyChangedEventArgs(info));
-			}
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
 		}
 		
 		public void Reset()
@@ -187,7 +184,7 @@ namespace CA.Engine
 			}
 			sm[1, 1] = false;
 			Generations = 0;
-			initializeSenescence();
+			InitializeSenescence();
 		}
 		
 		public void Randomize()
@@ -196,18 +193,20 @@ namespace CA.Engine
 		    for(int i = 0; i < (Space.Cells.Length / 8); i++) {
 		        Space.Cells[rnd.Next(Space.Cells.Length)] = cAlive.ToArgb(); //~0xF1DFB8 | (int)Filter.alpha;
 		    }
-			initializeSenescence();
+			InitializeSenescence();
 		}
 
-		public void proceed() {
-			try {
+		public void Proceed() {
+			if (Generations < uint.MaxValue) {
 				Generations++;
-			} catch (OverflowException) {
+			} else {
 				Generations = 0;
 				Overflow = true;
 			}
 		    int w = Space.Width;
 			int h = Space.Height;
+            int maxW = w - 1;
+            int maxH = h - 1;
 		    // Create an array to store image data
 			int[] idCopy = new int[w * h];
 			//int r = 0;
@@ -217,15 +216,15 @@ namespace CA.Engine
 				for(int b = 0; b < (h); b++) {
 					k = 0;
 					//System.Console.WriteLine("w = " + w.ToString() + ", h = " + h.ToString() + "; a = " + a.ToString() + ", b = " + b.ToString() + "; eval = " + ((a+1)*(b+1)).ToString() + "; length = " + Space.Cells.Length.ToString());
-					try {
-					if(sm[0,0] && rcb[0,0]) { if(idCopy[(a-1) + w * (b-1)] != cd) { k++; } }
-					if(sm[0,1] && rcb[0,1]) { if(idCopy[a + w * (b-1)] != cd) { k++; } }
-					if(sm[0,2] && rcb[0,2]) { if(idCopy[(a+1) + w * (b-1)] != cd) { k++; } }
-					if(sm[1,0] && rcb[1,0]) { if(idCopy[(a-1) + w * b] != cd) { k++; } }
-					if(sm[1,2] && rcb[1,2]) { if(idCopy[(a+1) + w * b] != cd) { k++; } }
-					if(sm[2,0] && rcb[2,0]) { if(idCopy[(a-1) + w * (b+1)] != cd) { k++; } }
-					if(sm[2,1] && rcb[2,1]) { if(idCopy[a + w * (b+1)] != cd) { k++; } }
-					if(sm[2,2] && rcb[2,2]) { if(idCopy[(a+1) + w * (b+1)] != cd) { k++; } }
+					//try {
+					if(sm[0,0] && rcb[0,0]) { if(a > 0 && b > 0 && idCopy[(a-1) + w * (b-1)] != cd) { k++; } }
+					if(sm[0,1] && rcb[0,1]) { if(b > 0 && idCopy[a + w * (b-1)] != cd) { k++; } }
+					if(sm[0,2] && rcb[0,2]) { if(b > 0 && a < maxW && idCopy[(a+1) + w * (b-1)] != cd) { k++; } }
+					if(sm[1,0] && rcb[1,0]) { if(a > 0 && idCopy[(a-1) + w * b] != cd) { k++; } }
+					if(sm[1,2] && rcb[1,2]) { if(a < maxW && idCopy[(a+1) + w * b] != cd) { k++; } }
+					if(sm[2,0] && rcb[2,0]) { if(a > 0 && b < maxH && idCopy[(a-1) + w * (b+1)] != cd) { k++; } }
+					if(sm[2,1] && rcb[2,1]) { if(b < maxH && idCopy[a + w * (b+1)] != cd) { k++; } }
+					if(sm[2,2] && rcb[2,2]) { if(a < maxW && b < maxH && idCopy[(a+1) + w * (b+1)] != cd) { k++; } }
 					int pos = a + w * b;
 					if (idCopy[pos] == cd) {
 						if(Contains(liv, k)) {
@@ -251,14 +250,17 @@ namespace CA.Engine
 							Space.Cells[pos] = cd;
 							Space.Ages[pos] = 0;
 						} else {
-							//double lambda = (float)Space.Ages[pos] * step;
-							//Color clr = ColorInterpolator.InterpolateBetween(cAlive, cOld, lambda);
-							//Space.Cells[pos] = clr.R<<16 + clr.G<<8 + clr.B;
-							Space.Cells[pos] = palette[Space.Ages[pos] - 1].ToArgb();
+                            //double lambda = (float)Space.Ages[pos] * step;
+                            //Color clr = ColorInterpolator.InterpolateBetween(cAlive, cOld, lambda);
+                            //Space.Cells[pos] = clr.R<<16 + clr.G<<8 + clr.B;
+                            var age = Space.Ages[pos] - 1;
+                            if (age >= 0 && age < palette.Length)
+                                Space.Cells[pos] = palette[age].ToArgb();
 						}
 					}
-					} catch(IndexOutOfRangeException) {
-					}
+					//} catch(IndexOutOfRangeException e) {
+                    //    System.Diagnostics.Debug.Print("Out of range exception");
+					//}
 				}
 			}
 		}
@@ -271,7 +273,7 @@ namespace CA.Engine
 		}
 
 		public void RefreshPalette(List<Gfx.Palette.GradientEditor.GradientStop> m) {
-			initPalette(m);
+			InitPalette(m);
 		}
 		
 	}

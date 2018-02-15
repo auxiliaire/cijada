@@ -1,4 +1,0 @@
-/media/vezir/Halom/Dokumentumok/Fejlesztés/CA-2011/bin/Debug/Ca-2011.exe.mdb
-/media/vezir/Halom/Dokumentumok/Fejlesztés/CA-2011/bin/Debug/Ca-2011.exe
-/media/vezir/Halom/Dokumentumok/Fejlesztés/CA-2011/Draw/obj/Debug/Ca-2011.exe
-/media/vezir/Halom/Dokumentumok/Fejlesztés/CA-2011/Draw/obj/Debug/Ca-2011.exe.mdb

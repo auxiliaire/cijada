@@ -243,9 +243,11 @@ namespace CA.Gfx.Palette.GradientEditor
             } // end foreach
             System.Drawing.Drawing2D.LinearGradientBrush b = new System.Drawing.Drawing2D.LinearGradientBrush(p1, p2, Color.Blue, Color.Red);
 
-            System.Drawing.Drawing2D.ColorBlend colorBlend = new System.Drawing.Drawing2D.ColorBlend();
-            colorBlend.Colors = clrArray;
-            colorBlend.Positions = posArray;
+            System.Drawing.Drawing2D.ColorBlend colorBlend = new System.Drawing.Drawing2D.ColorBlend
+            {
+                Colors = clrArray,
+                Positions = posArray
+            };
             // Set InterpolationColors property
             b.InterpolationColors = colorBlend;
 			return b;

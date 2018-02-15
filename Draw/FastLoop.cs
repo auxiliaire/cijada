@@ -43,8 +43,7 @@ namespace CA
 		
 		private bool IsAppStillIdle()
 		{
-			Message msg;
-			return !PeekMessage(out msg,IntPtr.Zero, 0, 0, 0);
-		}
+            return !PeekMessage(out Message msg, IntPtr.Zero, 0, 0, 0);
+        }
 	}
 }

@@ -1,5 +1,0 @@
-C:\Documents and Settings\Lenke Molnar\My Documents\Fejlesztés\CA-2011\bin\Debug\Ca-2011.exe
-C:\Documents and Settings\Lenke Molnar\My Documents\Fejlesztés\CA-2011\bin\Debug\Ca-2011.pdb
-C:\Documents and Settings\Lenke Molnar\My Documents\Fejlesztés\CA-2011\Draw\obj\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Lenke Molnar\My Documents\Fejlesztés\CA-2011\Draw\obj\Debug\Ca-2011.exe
-C:\Documents and Settings\Lenke Molnar\My Documents\Fejlesztés\CA-2011\Draw\obj\Debug\Ca-2011.pdb

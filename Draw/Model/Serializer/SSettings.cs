@@ -1,6 +1,4 @@
-using System;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace CA.Model.Serializer
@@ -11,7 +9,7 @@ namespace CA.Model.Serializer
 		{
 		}
 
-		public void SerializeObject(string filename, CA.Model.Settings objectToSerialize)
+		public void SerializeObject(string filename, Settings objectToSerialize)
 		{
 			Stream stream = File.Open(filename, FileMode.Create);
 			BinaryFormatter bFormatter = new BinaryFormatter();
@@ -19,12 +17,12 @@ namespace CA.Model.Serializer
 			stream.Close();
 		}
 
-		public CA.Model.Settings DeSerializeObject(string filename)
+		public Settings DeSerializeObject(string filename)
 		{
-			CA.Model.Settings objectToSerialize;
+			Settings objectToSerialize;
 			Stream stream = File.Open(filename, FileMode.Open);
 			BinaryFormatter bFormatter = new BinaryFormatter();
-			objectToSerialize = (CA.Model.Settings)bFormatter.Deserialize(stream);
+			objectToSerialize = (Settings)bFormatter.Deserialize(stream);
 			stream.Close();
 			return objectToSerialize;
 		}

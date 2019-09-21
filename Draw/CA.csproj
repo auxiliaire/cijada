@@ -85,12 +85,22 @@
     <Compile Include="Gfx\Palette\GradientEditor\GradientStop.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Win32.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Model\State.cs" />
     <Compile Include="Model\Serializer\SSettings.cs" />
     <Compile Include="Model\Serializer\SState.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <ItemGroup />
 </Project>

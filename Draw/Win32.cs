@@ -15,7 +15,7 @@ namespace CA.Win32 {
 	  [DllImport("gdi32.dll")]
 	  static extern uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
 	
-	  static public System.Drawing.Color GetPixelColor(int x, int y)
+	  static public Color GetPixelColor(int x, int y)
 	  {
 	   IntPtr hdc = GetDC(IntPtr.Zero);
 	   uint pixel = GetPixel(hdc, x, y);

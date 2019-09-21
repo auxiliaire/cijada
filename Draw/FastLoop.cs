@@ -8,7 +8,7 @@ namespace CA
 	{
 		[System.Security.SuppressUnmanagedCodeSecurity]
 		[DllImport("User32.dll", CharSet = CharSet.Auto)]
-		public static extern bool PeekMessage(
+		private static extern bool PeekMessage(
 			out Message msg,
 			IntPtr hWnd,
 			uint messageFilterMin,
@@ -26,7 +26,7 @@ namespace CA
 		}
 
 		public delegate void LoopCallback();
-		LoopCallback _callback;
+        readonly LoopCallback _callback;
 		
 		public FastLoop(LoopCallback callback)
 		{

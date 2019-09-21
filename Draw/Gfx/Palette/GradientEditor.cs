@@ -2,14 +2,11 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using CA.Gfx.Palette;
-using CA.Win32;
 
 namespace CA.Gfx.Palette.GradientEditor
 {
-	public class GradientEditor : System.Windows.Forms.Control
+	public class GradientEditor : Control
 	{
-		//public Map map;
 		private List<GradientStop> map;
 
 		private const int EDIT_HEIGHT = 10;
@@ -23,20 +20,16 @@ namespace CA.Gfx.Palette.GradientEditor
 
 		// GradientStop moving related vars:
 		private Point _point_begin;
-		private Point _point_end;
 		private Control _control_moving = null;
 		private int x_offset_on_client_control;
-		private int y_offset_on_client_control;
 		private ToolTip geditTT = null;
 
 		public GradientEditor ()
 		{
-			//map = new Map();
 			map = new List<GradientStop>();
 			_init();
 		}
 
-		//public GradientEditor (Map m)
 		public GradientEditor (List<GradientStop> m)
 		{
 			map = m;
@@ -46,11 +39,10 @@ namespace CA.Gfx.Palette.GradientEditor
 
 		protected void _initStops()
 		{
-			//foreach (var pair in map.getMap()) {
 			foreach (GradientStop gs in map) {
 				Control ctrl = (Control)gs;
 				_addStopEventHandlers(ctrl);
-				addStop(gs, posToX(gs.position));
+				AddStop(gs, PosToX(gs.Position));
 			}
 		}
 
@@ -81,18 +73,15 @@ namespace CA.Gfx.Palette.GradientEditor
 		{
 			gradientWidth = Width - STOP_WIDTH;
 			gradientHeight = ClientRectangle.Height - EDIT_HEIGHT - 2;
-	        gradientX = ClientRectangle.X + (int)(STOP_WIDTH / 2);
+	        gradientX = ClientRectangle.X + (STOP_WIDTH / 2);
 			gradientY = ClientRectangle.Y + EDIT_HEIGHT + 1;
 
-			//double ratio = 100.0f / gradientWidth;
 			int stop = 0;
 			int p = 0;
 			Point p1 = new Point(0, 0);
 			Point p2 = new Point(0, 0);
-			//Gfx.Palette.ColorStop first = null;
-			//Gfx.Palette.ColorStop last = null;
-			Gfx.Palette.GradientEditor.GradientStop first = null;
-			Gfx.Palette.GradientEditor.GradientStop last = null;
+			GradientStop first = null;
+			GradientStop last = null;
 			if (map.Count > 0) {
 				foreach (GradientStop gs in map) {
 					p++;
@@ -112,20 +101,14 @@ namespace CA.Gfx.Palette.GradientEditor
 						stop++;
 					}
 					if ((first != null) && (last != null)) {
-						//int start = (int)(first.getPosition() / ratio);
-						//int end = (int)(last.getPosition() / ratio);
-						//int walk = end - start;
-						//Console.WriteLine("Start: {0}", start);
-						p1.X = posToX(first.getPosition()); //start + gradientX + 1;
+						p1.X = PosToX(first.GetPosition());
 						p1.Y = gradientY + 1;
-						p2.X = posToX(last.getPosition()); // end + gradientX + 1;
-						//Console.WriteLine("End: {0}", end);
+						p2.X = PosToX(last.GetPosition());
 						p2.Y = gradientY + 1;
-						addStop(first, p1.X);
-						//addStop(last, p2.X);
+						AddStop(first, p1.X);
 					} // end if
 				} // end foreach
-				addStop(last, p2.X);
+				AddStop(last, p2.X);
 			}
 		}
 
@@ -136,26 +119,17 @@ namespace CA.Gfx.Palette.GradientEditor
 		}
 
 		// Old OnPaint method
-	    //protected override void OnPaint(PaintEventArgs pe)
         protected void _OnPaint(PaintEventArgs pe)
 	    {
 	        // Calling the base class OnPaint
 	        base.OnPaint(pe);
 
-			//gradientWidth = Width - STOP_WIDTH;
-			//gradientHeight = ClientRectangle.Height - EDIT_HEIGHT - 2;
-	        //gradientX = ClientRectangle.X + (int)(STOP_WIDTH / 2);
-			//gradientY = ClientRectangle.Y + EDIT_HEIGHT + 1;
-
-			//double ratio = 100.0f / gradientWidth;
 			int stop = 0;
 			int p = 0;
 			Point p1 = new Point(0, 0);
 			Point p2 = new Point(0, 0);
-			//Gfx.Palette.ColorStop first = null;
-			//Gfx.Palette.ColorStop last = null;
-			Gfx.Palette.GradientEditor.GradientStop first = null;
-			Gfx.Palette.GradientEditor.GradientStop last = null;
+			GradientStop first = null;
+			GradientStop last = null;
 			Pen pen = new Pen(Color.Black);
 			foreach (GradientStop gs in map) {
 				p++;
@@ -175,32 +149,21 @@ namespace CA.Gfx.Palette.GradientEditor
 					stop++;
 				}
 				if ((first != null) && (last != null)) {
-					//int start = (int)(first.getPosition() / ratio);
-					//int end = (int)(last.getPosition() / ratio);
-					//Console.WriteLine("Start: {0}", start);
-					p1.X = gradientX + 1 + posToX(first.getPosition()); // start + gradientX + 1;
+					p1.X = gradientX + 1 + PosToX(first.GetPosition());
 					p1.Y = gradientY + 1;
-					p2.X = gradientX + 1 + posToX(last.getPosition()); // end + gradientX + 1;
-					//Console.WriteLine("End: {0}", end);
+					p2.X = gradientX + 1 + PosToX(last.GetPosition());
 					p2.Y = gradientY + 1;
                     Console.WriteLine("p1.X: {0}, p2.X: {1}", p1.X, p2.X);
                     Brush b;
                     if (p1.X != p2.X)
                     {
                         b = new System.Drawing.Drawing2D.LinearGradientBrush(
-                            p1, p2, _c(first.getColor()), _c(last.getColor()));
+                            p1, p2, _c(first.Color), _c(last.Color));
                     }
                     else
                     {
-                        b = new SolidBrush(last.getColor());
+                        b = new SolidBrush(last.Color);
                     }
-					//GradientStop gs = new GradientStop(first.getColor());
-					//gs.Left = p1.X - (int)(gs.Width / 2) - 1;
-					//gs.Top = 1;
-					//gs.Parent = this;
-					//_addStop(first.getColor(), first.getPosition(), p1.X);
-					//_addStop(first, p1.X);
-					//Console.WriteLine("p1: {0}, p2: {1}, gx: {2}, gw: {3}", p1.X, p2.X, gradientX, gradientWidth);
 			        pe.Graphics.FillRectangle (
 						b,
 						p1.X,
@@ -208,12 +171,6 @@ namespace CA.Gfx.Palette.GradientEditor
 						p2.X - p1.X,
 						gradientHeight
 					);
-					//gs = new GradientStop(last.getColor());
-					//gs.Left = p2.X - (int)(gs.Width / 2) - 1;
-					//gs.Top = 1;
-					//gs.Parent = this;
-					//addStop(last.getColor(), last.getPosition(), p2.X);
-					//addStop(last, p2.X);
 			        b.Dispose();
 				} // end if
 			} // end foreach
@@ -224,12 +181,10 @@ namespace CA.Gfx.Palette.GradientEditor
 				gradientWidth,
 				gradientHeight
 			);
-			//pen = new Pen(Color.Green);
-			//pe.Graphics.DrawRectangle(pen, ClientRectangle);
 			pen.Dispose();
 	    }
 
-		protected System.Drawing.Drawing2D.LinearGradientBrush getGradientBrush() {
+		protected System.Drawing.Drawing2D.LinearGradientBrush GetGradientBrush() {
             int p = 0;
             Point p1 = new Point(gradientX + 1, gradientY + 1);
             Point p2 = new Point(gradientX + 1 + gradientWidth, gradientY + 1 + gradientHeight);
@@ -237,8 +192,8 @@ namespace CA.Gfx.Palette.GradientEditor
             float[] posArray = new float[map.Count];
             foreach (GradientStop gs in map)
             {
-                clrArray[p] = _c(gs.getColor());
-                posArray[p] = (float)(0.01f * gs.getPosition());
+                clrArray[p] = _c(gs.Color);
+                posArray[p] = (0.01f * gs.GetPosition());
                 p++;
             } // end foreach
             System.Drawing.Drawing2D.LinearGradientBrush b = new System.Drawing.Drawing2D.LinearGradientBrush(p1, p2, Color.Blue, Color.Red);
@@ -253,33 +208,23 @@ namespace CA.Gfx.Palette.GradientEditor
 			return b;
 		}
 
-        protected override void OnPaint(PaintEventArgs pe)
+        protected override void OnPaint(PaintEventArgs e)
         {
             // Calling the base class OnPaint
-            base.OnPaint(pe);
+            base.OnPaint(e);
 
-            //gradientWidth = Width - STOP_WIDTH;
-            //gradientHeight = ClientRectangle.Height - EDIT_HEIGHT - 2;
-            //gradientX = ClientRectangle.X + (int)(STOP_WIDTH / 2);
-            //gradientY = ClientRectangle.Y + EDIT_HEIGHT + 1;
+			System.Drawing.Drawing2D.LinearGradientBrush b = GetGradientBrush();
 
-            //double ratio = 100.0f / gradientWidth;
-            //int stop = 0;
-
-			System.Drawing.Drawing2D.LinearGradientBrush b = getGradientBrush();
-
-            pe.Graphics.FillRectangle(b, gradientX + 1, gradientY + 1, gradientWidth, gradientHeight);
+            e.Graphics.FillRectangle(b, gradientX + 1, gradientY + 1, gradientWidth, gradientHeight);
 
 			Pen pen = new Pen(Color.Black);
-            pe.Graphics.DrawRectangle(
+            e.Graphics.DrawRectangle(
                 pen,
                 gradientX,
                 gradientY,
                 gradientWidth,
                 gradientHeight
             );
-            //pen = new Pen(Color.Green);
-            //pe.Graphics.DrawRectangle(pen, ClientRectangle);
             pen.Dispose();
 			b.Dispose();
         }
@@ -294,7 +239,7 @@ namespace CA.Gfx.Palette.GradientEditor
 				Bitmap bmp = new Bitmap(this.Width, this.Height);
 				Graphics g = Graphics.FromImage(bmp);
 
-				System.Drawing.Drawing2D.LinearGradientBrush b = getGradientBrush();
+				System.Drawing.Drawing2D.LinearGradientBrush b = GetGradientBrush();
 
 	            g.FillRectangle(b, gradientX + 1, 0, gradientWidth, Height);
 				b.Dispose();
@@ -304,8 +249,8 @@ namespace CA.Gfx.Palette.GradientEditor
 				bmp.Dispose();
 				g.Dispose();
 
-				GradientStop grs = new GradientStop(clr, xToPos(e.X - (int)(STOP_WIDTH / 2)));
-				setColorStop(grs);
+				GradientStop grs = new GradientStop(clr, XToPos(e.X - (STOP_WIDTH / 2)));
+				SetColorStop(grs);
 				map.Sort();
 				MapChanged(this, new EventArgs());
 				Invalidate();
@@ -316,8 +261,7 @@ namespace CA.Gfx.Palette.GradientEditor
 		{
             int x;
             int y;
-			int pos = ((GradientStop)sender).position;
-			//Console.WriteLine("ˇˇˇˇˇˇˇˇ pos: {0}", pos);
+			int pos = ((GradientStop)sender).Position;
 		    if (
                 // while left button pressed (could define other keys)
                 e.Button == MouseButtons.Left
@@ -333,10 +277,10 @@ namespace CA.Gfx.Palette.GradientEditor
 					int cPos;
 		            foreach (Control ctrl in Controls)
 		            {
-						cPos = ((GradientStop)ctrl).position;
+						cPos = ((GradientStop)ctrl).Position;
 						if (pos == cPos) {
 							// Removing GradientStop
-							removeColorStop((GradientStop) ctrl);
+							RemoveColorStop((GradientStop) ctrl);
 							_removeStopEventHandlers(ctrl);
 							Controls.Remove(ctrl);
 							ctrl.Dispose();
@@ -346,20 +290,16 @@ namespace CA.Gfx.Palette.GradientEditor
 					}
 				}
 				// else Normal Click
-                Point pt = Cursor.Position;
                 x_offset_on_client_control = e.X;
-                y_offset_on_client_control = e.Y;
 
                 x = x_offset_on_client_control + ((Control)sender).Location.X;
-                y = y_offset_on_client_control + ((Control)sender).Location.Y;
-                pt = new Point(x, y);
-
-                _point_begin = pt;
+                y = e.Y + ((Control)sender).Location.Y;
+                _point_begin = new Point(x, y);
             }
 
             foreach (Control ctrl in Controls)
             {
-				pos = ((GradientStop)ctrl).position;
+				pos = ((GradientStop)ctrl).Position;
                 if (ctrl.Bounds.Contains(_point_begin)
 					&& pos > 0
 					&& pos < 100
@@ -367,12 +307,11 @@ namespace CA.Gfx.Palette.GradientEditor
                     _control_moving = ctrl;
                 }
             }
-            return;
 		}
 
 		protected virtual void StopMouseMoveHandler (object sender, MouseEventArgs e)
 		{
-			int pos = ((GradientStop)sender).position;
+			int pos = ((GradientStop)sender).Position;
         	if (
                 ! "CA.Gfx.Palette.GradientEditor.GradientEditor".Equals(sender.GetType().ToString())
                 && _control_moving != null
@@ -386,31 +325,25 @@ namespace CA.Gfx.Palette.GradientEditor
                                 -
                                 x_offset_on_client_control
                                 ;
-				if (l > (gradientX - (int)(_control_moving.Width / 2) - 1)
-					&& l < (gradientX - (int)(_control_moving.Width / 2) + 1 + gradientWidth)
+				if (l > (gradientX - (_control_moving.Width / 2) - 1)
+					&& l < (gradientX - (_control_moving.Width / 2) + 1 + gradientWidth)
 				) {
-					pos = xToPos(l);
+					pos = XToPos(l);
 					if (pos > 0 && pos < 100) {
-						//Console.WriteLine("m.pos: {0}", pos);
 						_control_moving.Left = l;
 						GradientStop gs = (GradientStop)_control_moving;
-						gs.position = pos;
+						gs.Position = pos;
 						map.Sort();
 						MapChanged(this, new EventArgs());
 						Invalidate();
 					}
 				}
-                //_control_moving.Top =
-                //                (this.PointToClient(pt)).Y
-                //                -
-                //                y_offset_on_client_control
-                //                ;
             }
 		}
 
 		protected virtual void StopMouseUpHandler (object sender, MouseEventArgs e)
 		{
-			int pos = ((GradientStop)sender).position;
+			int pos = ((GradientStop)sender).Position;
             if (
                 _control_moving != null
                 && e.Button == MouseButtons.Left
@@ -423,18 +356,15 @@ namespace CA.Gfx.Palette.GradientEditor
                 x = ((Control)sender).Location.X;
                 y = ((Control)sender).Location.Y;
 
-                Point pt = new Point(x, y);
-                _point_end = pt;
-                //_control_moving.Location = _point_end;
-				if (_point_end.X > (gradientX - (int)(_control_moving.Width / 2) - 1)
-					&& _point_end.X < (gradientX - (int)(_control_moving.Width / 2) + 1 + gradientWidth)
+                Point _point_end = new Point(x, y);
+				if (_point_end.X > (gradientX - (_control_moving.Width / 2) - 1)
+					&& _point_end.X < (gradientX - (_control_moving.Width / 2) + 1 + gradientWidth)
 				) {
-					pos = xToPos(_point_end.X);
+					pos = XToPos(_point_end.X);
 					if (pos > 0 && pos < 100) {
-						//Console.WriteLine("^^^^^^^^ pos: {0}", pos);
 						_control_moving.Left = _point_end.X;
 						GradientStop gs = (GradientStop)_control_moving;
-						gs.position = pos;
+						gs.Position = pos;
 						map.Sort();
 						MapChanged(this, new EventArgs());
 						Invalidate();
@@ -442,71 +372,65 @@ namespace CA.Gfx.Palette.GradientEditor
 				}
                 _control_moving = null;
             }
-            return;
 		}
 
-		protected GradientStop findStop(Color c, int p)
+		protected GradientStop FindStop(Color c, int p)
 		{
 			foreach (Control ctrl in Controls) {
 				GradientStop gs = (GradientStop)ctrl;
-				if (gs.color == c && gs.position == p) {
+				if (gs.Color == c && gs.Position == p) {
 					return gs;
 				}
 			}
 			return null;
 		}
 
-		protected void addStop(GradientStop gs, int x) {
-			gs.Left = x; // - (int)(gs.Width / 2) - 1;
+		protected void AddStop(GradientStop gs, int x) {
+			gs.Left = x;
 			gs.Top = 1;
 			gs.Parent = this;
 		}
 
-		protected int xToPos(int x) {
+		protected int XToPos(int x) {
 			double ratio = 100.0f / gradientWidth;
-			//int start = x - gradientX - 1;
-			int start = x - gradientX + (int)(STOP_WIDTH / 2);
+			int start = x - gradientX + (STOP_WIDTH / 2);
 			int pos = (int)(start * ratio);
 			return pos;
 		}
 
-		protected int posToX(int p) {
+		protected int PosToX(int p) {
 			double ratio = 100.0f / gradientWidth;
 			int start = (int)(p / ratio);
-			//int x = start + gradientX + 1;
-			int x = start + gradientX - (int)(STOP_WIDTH / 2);
-			return x; //start;
+			int x = start + gradientX - (STOP_WIDTH / 2);
+			return x;
 		}
 
-		public void setColorStop(GradientStop s) {
+		public void SetColorStop(GradientStop s) {
 			map.Add(s);
 			_addStopEventHandlers((Control)s);
-			addStop(s, posToX(s.position));
+			AddStop(s, PosToX(s.Position));
 		}
 
-		public void removeColorStop(GradientStop gs) { //int order) {
+		public void RemoveColorStop(GradientStop gs) {
 			map.Remove(gs);
 		}
 
-		//public Dictionary<int, ColorStop> getMap() {
-		public List<GradientStop> getMap() {
+		public List<GradientStop> GetMap() {
 			return map;
 		}
 
-		public void setMap(List<GradientStop> m) {
+		public void SetMap(List<GradientStop> m) {
 			// Removing all previously defined stops:
 			foreach (Control ctrl in Controls) {
-				removeColorStop((GradientStop) ctrl);
+				RemoveColorStop((GradientStop) ctrl);
 				_removeStopEventHandlers(ctrl);
-				//Controls.Remove(ctrl);
 				ctrl.Dispose();
 			}
 			Controls.Clear();
 			map = new List<GradientStop>();
 			// Setting new stops:
 			foreach (GradientStop gs in m) {
-				//Console.WriteLine("color: {0}, pos: {1}", gs.color, gs.position);
-				setColorStop(new GradientStop(gs.color, gs.position));
+				SetColorStop(new GradientStop(gs.Color, gs.Position));
 			}
 			MapChanged(this, new EventArgs());
 			Invalidate();

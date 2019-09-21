@@ -2,51 +2,52 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.Generic;
+using System.Security.Permissions;
 
 namespace CA.Gfx.Palette.GradientEditor
 {
-	[Serializable()]
-	public class GradientStop : System.Windows.Forms.Control, IComparable<GradientStop>, ISerializable
-	{
-		public Color color;
-		public int position;
+	[Serializable]
+	public sealed class GradientStop : Control, IComparable<GradientStop>, ISerializable, IEquatable<GradientStop>
+    {
+		public Color Color { get; set; }
+		public int Position { get; set; }
 
 		private const int STOP_WIDTH = 7;
 		private const int STOP_HEIGHT = 10;
 
-		public GradientStop ()
+		public GradientStop()
 		{
 			_init();
 		}
 
-		public GradientStop (Color c)
+		public GradientStop(Color c)
 		{
-			color = c;
+			Color = c;
 			_init();
 		}
 
-		public GradientStop (Color c, int p)
+		public GradientStop(Color c, int p)
 		{
-			color = c;
-			position = p;
+			Color = c;
+			Position = p;
 			_init ();
 		}
 
-		protected void _init()
+		private void _init()
 		{
 			Width = STOP_WIDTH;
 			Height = STOP_HEIGHT;
 		}
 
-		protected override void OnPaint (System.Windows.Forms.PaintEventArgs pe)
+		protected override void OnPaint(PaintEventArgs e)
 		{
-			base.OnPaint (pe);
+			base.OnPaint(e);
 
 			Pen pen = new Pen(Color.Black);
 			int bLeft = 0;
 			int bRight = STOP_WIDTH - 1;
-			int center = (int)(STOP_WIDTH / 2);
+            int center = STOP_WIDTH / 2;
 			Point[] points = new Point[6];
 			points[0] = new Point(center + 1, STOP_HEIGHT);
 			points[1] = new Point(bLeft, STOP_HEIGHT - 4);
@@ -54,11 +55,9 @@ namespace CA.Gfx.Palette.GradientEditor
 			points[3] = new Point(bRight, 0);
 			points[4] = new Point(bRight, STOP_HEIGHT - 4);
 			points[5] = new Point(center, STOP_HEIGHT - 1);
-			//Console.WriteLine("Color: {0}", color);
-			//Console.WriteLine("0: {0}, 1: {1}, 2: {2}, 3: {3}, 4: {4}, 5: {5}", points[0], points[1], points[2], points[3], points[4], points[5]);
-			Brush c = new SolidBrush(_c(color));
-			pe.Graphics.FillPolygon(c, points);
-			pe.Graphics.DrawPolygon(pen, points);
+			Brush c = new SolidBrush(_c(Color));
+			e.Graphics.FillPolygon(c, points);
+			e.Graphics.DrawPolygon(pen, points);
 			c.Dispose();
 			pen.Dispose();
 		}
@@ -75,47 +74,77 @@ namespace CA.Gfx.Palette.GradientEditor
 			Invalidate();
 		}
 
-		protected override void OnMouseDoubleClick (System.Windows.Forms.MouseEventArgs e)
+		protected override void OnMouseDoubleClick (MouseEventArgs e)
 		{
 			base.OnMouseDoubleClick (e);
 			ColorDialog dialog = new ColorDialog();
 			if (dialog.ShowDialog(this) == DialogResult.OK) {
-				color = dialog.Color;
+				Color = dialog.Color;
 				Invalidate();
 			}
 		}
 
-		public void setPosition (int p)
+		public void SetPosition (int p)
 		{
 			if (p > 100) {
-				Console.WriteLine("Notice: ColorStop.position cannot exceed a value of 100");
+				Console.WriteLine("Warning: ColorStop.position cannot exceed a value of 100");
 				p = 100;
 			}
-			position = p;
+			Position = p;
 		}
 		
-		public int getPosition ()
+		public int GetPosition ()
 		{
-			return position;
-		}
-		
-		public void setColor (Color c)
-		{
-			color = c;
+			return Position;
 		}
 
-		public Color getColor ()
-		{
-			return color;
-		}
+        public static bool operator > (GradientStop operand1, GradientStop operand2)
+        {
+            return operand1.CompareTo(operand2) == 1;
+        }
 
-		public int CompareTo(GradientStop gs)
+        public static bool operator < (GradientStop operand1, GradientStop operand2)
+        {
+            return operand1.CompareTo(operand2) == -1;
+        }
+
+        public static bool operator >= (GradientStop operand1, GradientStop operand2)
+        {
+            return operand1.CompareTo(operand2) >= 0;
+        }
+
+        public static bool operator <= (GradientStop operand1, GradientStop operand2)
+        {
+            return operand1.CompareTo(operand2) <= 0;
+        }
+
+        public static bool operator == (GradientStop operand1, GradientStop operand2)
+        {
+            if (operand1 is null)
+            {
+                return operand2 is null;
+            }
+            return operand1.CompareTo(operand2) == 0;
+        }
+
+        public static bool operator != (GradientStop operand1, GradientStop operand2)
+        {
+            if (operand1 is null)
+            {
+                return !(operand2 is null);
+            }
+            return operand1.CompareTo(operand2) != 0;
+        }
+
+        public int CompareTo(GradientStop other)
 		{
-			return position.CompareTo(gs.position);
+            if (other == null) return 1;
+
+            return Position.CompareTo(other.Position);
 		}
 
 		// Converts all colors to grayscale if Disabled
-		protected Color _c(Color c)
+		private Color _c(Color c)
 		{
 			if (Enabled) return c;
 			// Else (Disabled):
@@ -123,19 +152,45 @@ namespace CA.Gfx.Palette.GradientEditor
 			return Color.FromArgb(luma, luma, luma);
 		}
 
-		// SERIALIZATION RELATED:
+        // SERIALIZATION RELATED:
 
-		public GradientStop(SerializationInfo info, StreamingContext ctxt)
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public GradientStop(SerializationInfo info, StreamingContext ctxt)
 		{
-			this.color = (Color)info.GetValue("Color", typeof(Color));
-			this.position = (int)info.GetValue("Position", typeof(int));
+			Color = (Color)info.GetValue("Color", typeof(Color));
+			Position = (int)info.GetValue("Position", typeof(int));
 		}
 
-		public void GetObjectData(SerializationInfo info, StreamingContext ctxt)
+        [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("Color", this.color);
-			info.AddValue("Position", this.position);
-		}
-	}
+            if (info == null)
+            {
+                throw new ArgumentNullException("info");
+            }
+            info.AddValue("Color", Color, typeof(Color));
+			info.AddValue("Position", Position, typeof(int));
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as GradientStop);
+        }
+
+        public bool Equals(GradientStop other)
+        {
+            return other != null &&
+                   EqualityComparer<Color>.Default.Equals(Color, other.Color) &&
+                   Position == other.Position;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1695330334;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Color>.Default.GetHashCode(Color);
+            hashCode = hashCode * -1521134295 + Position.GetHashCode();
+            return hashCode;
+        }
+    }
 }
 

@@ -3,12 +3,12 @@ namespace CA.Engine
 {
 	public class Space
 	{
-		public int Width = 0;
-		public int Height = 0;
-		public int[] Cells;
-		public int[] Ages;
-		
-		public Space ()
+		public int Width { get; set; } = 0;
+		public int Height { get; set; } = 0;
+		public int[] Cells { get; set; }
+        public int[] Ages { get; set; }
+
+        public Space ()
 		{
 		}
 		
@@ -16,10 +16,10 @@ namespace CA.Engine
 		{
 			Width = w;
 			Height = h;
-			reset();
+			Reset();
 		}
 
-		public void reset() {
+		public void Reset() {
 			int size = Width * Height;
 			Cells = new int[size];
 			Ages = new int[size];

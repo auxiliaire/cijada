@@ -42,10 +42,10 @@ namespace CA.Gfx
 		
 		public static IEnumerable<Color> GetGradients(Color start, Color end, int steps) {
 			for (int i = 0; i < steps; i++) {
-    			var aAverage = start.A + (int)((end.A - start.A) * i / steps);
-    			var rAverage = start.R + (int)((end.R - start.R) * i / steps);
-    			var gAverage = start.G + (int)((end.G - start.G) * i / steps);
-    			var bAverage = start.B + (int)((end.B - start.B) * i / steps);
+    			var aAverage = start.A + ((end.A - start.A) * i / steps);
+    			var rAverage = start.R + ((end.R - start.R) * i / steps);
+    			var gAverage = start.G + ((end.G - start.G) * i / steps);
+    			var bAverage = start.B + ((end.B - start.B) * i / steps);
     			yield return Color.FromArgb(aAverage, rAverage, gAverage, bAverage);
 			}
 		}

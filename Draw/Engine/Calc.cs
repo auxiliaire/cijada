@@ -8,153 +8,135 @@ namespace CA.Engine
 {
 	public class Calc : INotifyPropertyChanged
 	{
-		public Color cAlive;
-		public Color cDead;
-		public Color[] palette;
-		public bool senescence = true;
-		public bool GradientTest = false;
-		public int ageToDie = 50;
-		public Space Space;
-		// integer representation of the colors
-		private int ca;
+		public Color CellAlive { get; set; }
+		public Color CellDead { get; set; }
+		public Color[] Palette { get; set; }
+		public bool Senescence { get; set; } = true;
+		public bool GradientTest { get; set; } = false;
+		public int AgeToDie { get; set; } = 50;
+		public Space Space { get; set; }
+        // integer representation of the colors
+        private int ca;
 		private int cd;
-		//private Gfx.Palette.Map paletteMap;
-		//private double step;
-		public bool[,] sm = {{true, true, true}, {true, false, true}, {true, true, true}};
-		//private int[] liv = {1, 3}; // {0,1,4..8}        {Conway: 3}
-		//private int[] dth = {0, 2, 4, 5, 6, 7, 8}; // {0..2,4..8} {Conway: 0,1,4..8}
-		public int[] liv = {1, 2, 4, 6, 7, 8};
-		public int[] dth = {};
-		public bool[,] rcb = {{true, true, true},
-								{true, true, true},
-								{true, true, true}};
+		public bool[,] Vm { get; set; } = {{true, true, true}, {true, false, true}, {true, true, true}};
+		public int[] ToLive { get; set; } = {1, 2, 4, 6, 7, 8};
+		public int[] ToDie { get; set; } = {};
+		public bool[,] Rcb { get; set; } = {{true, true, true},
+                                            {true, true, true},
+                                            {true, true, true}};
 		private uint generations = 0;
-		public bool Overflow = false;
+		public bool Overflow { get; set; } = false;
 
 		public Calc (Space s)
 		{
 			Space = s;
-			init();
+			Init();
 		}
 		
 		public Calc (Space s, Color alive, Color dead)
 		{
 			Space = s;
-			cAlive = alive;
-			cDead = dead;
-			init();
+			CellAlive = alive;
+			CellDead = dead;
+			Init();
 		}
 		
 		public Calc (Space s, Color[] p)
 		{
 			Space = s;
-			palette = p;
-			init();
+			Palette = p;
+			Init();
 		}
 		
 		//public Calc (Space s, Gfx.Palette.Map m)
 		public Calc (Space s, List<Gfx.Palette.GradientEditor.GradientStop> m)
 		{
 			Space = s;
-			initPalette(m);
-			init();
+			InitPalette(m);
+			Init();
 		}
 
-		public void setSpace (Space s) {
+		public void SetSpace (Space s) {
 			Space = s;
-			init();
+			Init();
 		}
 
-		private void initPalette(List<Gfx.Palette.GradientEditor.GradientStop> m) {
-			palette = new Color[ageToDie];
-			double ratio = 100.0f / ageToDie;
-			//int stops = m.getMap().Count;
-			//int stops = m.Count;
+		private void InitPalette(List<Gfx.Palette.GradientEditor.GradientStop> gradientStops) {
+			Palette = new Color[AgeToDie];
+			double ratio = 100.0f / AgeToDie;
 			int stop = 0;
-			//int age = (int) ageToDie / (stops - 1);
 			int p = 0;
-			//Gfx.Palette.ColorStop first = null;
-			//Gfx.Palette.ColorStop last = null;
 			Gfx.Palette.GradientEditor.GradientStop first = null;
 			Gfx.Palette.GradientEditor.GradientStop last = null;
-			//foreach (var pair in m.getMap()) {
-			foreach (Gfx.Palette.GradientEditor.GradientStop gs in m) {
+			foreach (Gfx.Palette.GradientEditor.GradientStop gradientStop in gradientStops) {
 				p++;
 				if (p == 1) {
 					if (first == null) {
-						first = gs;
+						first = gradientStop;
 						last = null;
 					} else if (last != null) {
 						first = last;
-						last = gs;
+						last = gradientStop;
 						p = 0;
 						stop++;
 					}
 				} else { // 2
-					last = gs;
+					last = gradientStop;
 					p = 0;
 					stop++;
 				}
 				if ((first != null) && (last != null)) {
-					int start = (int)(first.getPosition() / ratio);
-					int end = (int)(last.getPosition() / ratio);
+					int start = (int)(first.GetPosition() / ratio);
+					int end = (int)(last.GetPosition() / ratio);
 					int i = start;
 					int walk = end - start;
-					foreach (Color c in ColorInterpolator.GetGradients(first.getColor(), last.getColor(), walk)) {
-						palette[i] = c;
+					foreach (Color c in ColorInterpolator.GetGradients(first.Color, last.Color, walk)) {
+						Palette[i] = c;
 						i++;
 					}
 				}
 			}
 		}
 
-		private void init() {
-			cAlive = palette[0];
-			cDead = Color.Black;
-			generateIntColors();
-			initializeSenescence();
+		private void Init() {
+			CellAlive = Palette[0];
+			CellDead = Color.Black;
+			GenerateIntColors();
+			InitializeSenescence();
 		}
 		
-		private void generateIntColors() {
+		private void GenerateIntColors() {
 			// Colors to ints for faster calculation:
-			ca = cAlive.ToArgb();
-			cd = cDead.ToArgb();
+			ca = CellAlive.ToArgb();
+			cd = CellDead.ToArgb();
 		}
 		
-		protected void initializeSenescence() {
+		protected void InitializeSenescence() {
 			// Create gradients for senescence
-			if (senescence) {
+			if (Senescence) {
 				int newBorn = Color.White.ToArgb();
 				int dead = Color.Black.ToArgb();
 				int scale = newBorn - dead;
-				//Console.WriteLine("newborn: {0}, dead: {1}, scale: {2}", newBorn, dead, scale);
-				int year = scale / ageToDie;
-				//Console.WriteLine("year: {0}", year);
-				//int white = (int)Math.Abs((Color.White.ToArgb()) / year) +1;
-				//int black = (int)Math.Abs((Color.Black.ToArgb()) / year) +1;
-				//Console.WriteLine("white: {0}, black: {1}", white, black);
-				//int yellow = (int)Math.Abs((Color.Yellow.ToArgb()) / year) +1;
-				//int brown = (int)Math.Abs((Color.SaddleBrown.ToArgb()) / year) +1;
-				//Console.WriteLine("yellow: {0}, brown: {1}", yellow, brown);
+				int year = scale / AgeToDie;
 				int pos = 0;
 				for(int  a = 0; a < (Space.Width); a++) {
 					for(int d = 0; d < (Space.Height); d++) {
 						pos = a + Space.Width * d;
-						Space.Ages[pos] = (int)Math.Abs(Space.Cells[pos] / year) + 1;
+						Space.Ages[pos] = Math.Abs(Space.Cells[pos] / year) + 1;
 					}
 				}
-				if (senescence && GradientTest) {
-					for (int i = 0; i < ageToDie; i++) {
-						Space.Cells[i] = palette[i].ToArgb();
-						Space.Cells[Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[2 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[3 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[4 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[5 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[6 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[7 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[8 * Space.Width + i] = palette[i].ToArgb();
-						Space.Cells[9 * Space.Width + i] = palette[i].ToArgb();
+				if (Senescence && GradientTest) {
+					for (int i = 0; i < AgeToDie; i++) {
+						Space.Cells[i] = Palette[i].ToArgb();
+						Space.Cells[Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[2 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[3 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[4 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[5 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[6 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[7 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[8 * Space.Width + i] = Palette[i].ToArgb();
+						Space.Cells[9 * Space.Width + i] = Palette[i].ToArgb();
 					}
 				}
 			}
@@ -171,64 +153,60 @@ namespace CA.Engine
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private void OnPropertyChanged(string info) {
-			PropertyChangedEventHandler handler = PropertyChanged;
-			if (handler != null) {
-				handler(this, new PropertyChangedEventArgs(info));
-			}
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
 		}
 		
 		public void Reset()
 		{
 			for(int  i = 0; i < 3; i++) {
 				for(int j = 0; j < 3; j++) {
-					sm[i, j] = true;
-					rcb[i, j] = true;
+					Vm[i, j] = true;
+					Rcb[i, j] = true;
 				}
 			}
-			sm[1, 1] = false;
+			Vm[1, 1] = false;
 			Generations = 0;
-			initializeSenescence();
+			InitializeSenescence();
 		}
 		
 		public void Randomize()
 		{
 			Random rnd = new Random();
 		    for(int i = 0; i < (Space.Cells.Length / 8); i++) {
-		        Space.Cells[rnd.Next(Space.Cells.Length)] = cAlive.ToArgb(); //~0xF1DFB8 | (int)Filter.alpha;
+		        Space.Cells[rnd.Next(Space.Cells.Length)] = CellAlive.ToArgb();
 		    }
-			initializeSenescence();
+			InitializeSenescence();
 		}
 
-		public void proceed() {
-			try {
+		public void Proceed() {
+			if (Generations < uint.MaxValue) {
 				Generations++;
-			} catch (OverflowException) {
+			} else {
 				Generations = 0;
 				Overflow = true;
 			}
 		    int w = Space.Width;
 			int h = Space.Height;
+            int maxW = w - 1;
+            int maxH = h - 1;
 		    // Create an array to store image data
-			int[] idCopy = new int[w * h];
-			//int r = 0;
+			int[] idCopy;
 			int k = 0;
 		    idCopy = (int[])Space.Cells.Clone();
 			for(int  a = 0; a < (w); a++) {
 				for(int b = 0; b < (h); b++) {
 					k = 0;
-					//System.Console.WriteLine("w = " + w.ToString() + ", h = " + h.ToString() + "; a = " + a.ToString() + ", b = " + b.ToString() + "; eval = " + ((a+1)*(b+1)).ToString() + "; length = " + Space.Cells.Length.ToString());
-					try {
-					if(sm[0,0] && rcb[0,0]) { if(idCopy[(a-1) + w * (b-1)] != cd) { k++; } }
-					if(sm[0,1] && rcb[0,1]) { if(idCopy[a + w * (b-1)] != cd) { k++; } }
-					if(sm[0,2] && rcb[0,2]) { if(idCopy[(a+1) + w * (b-1)] != cd) { k++; } }
-					if(sm[1,0] && rcb[1,0]) { if(idCopy[(a-1) + w * b] != cd) { k++; } }
-					if(sm[1,2] && rcb[1,2]) { if(idCopy[(a+1) + w * b] != cd) { k++; } }
-					if(sm[2,0] && rcb[2,0]) { if(idCopy[(a-1) + w * (b+1)] != cd) { k++; } }
-					if(sm[2,1] && rcb[2,1]) { if(idCopy[a + w * (b+1)] != cd) { k++; } }
-					if(sm[2,2] && rcb[2,2]) { if(idCopy[(a+1) + w * (b+1)] != cd) { k++; } }
+					if(Vm[0,0] && Rcb[0,0] && (a > 0 && b > 0 && idCopy[(a-1) + w * (b-1)] != cd)) { k++; }
+					if(Vm[0,1] && Rcb[0,1] && (b > 0 && idCopy[a + w * (b-1)] != cd)) { k++; }
+					if(Vm[0,2] && Rcb[0,2] && (b > 0 && a < maxW && idCopy[(a+1) + w * (b-1)] != cd)) { k++; }
+					if(Vm[1,0] && Rcb[1,0] && (a > 0 && idCopy[(a-1) + w * b] != cd)) { k++; }
+					if(Vm[1,2] && Rcb[1,2] && (a < maxW && idCopy[(a+1) + w * b] != cd)) { k++; }
+					if(Vm[2,0] && Rcb[2,0] && (a > 0 && b < maxH && idCopy[(a-1) + w * (b+1)] != cd)) { k++; }
+					if(Vm[2,1] && Rcb[2,1] && (b < maxH && idCopy[a + w * (b+1)] != cd)) { k++; }
+					if(Vm[2,2] && Rcb[2,2] && (a < maxW && b < maxH && idCopy[(a+1) + w * (b+1)] != cd)) { k++; }
 					int pos = a + w * b;
 					if (idCopy[pos] == cd) {
-						if(Contains(liv, k)) {
+						if(Contains(ToLive, k)) {
 							Space.Cells[pos] = ca;
 							Space.Ages[pos]++;	
 						} else {
@@ -236,7 +214,7 @@ namespace CA.Engine
 							Space.Ages[pos] = 0;
 						}
 					} else if (idCopy[pos] == ca) {
-						if(!Contains(dth, k)) {
+						if(!Contains(ToDie, k)) {
 							Space.Cells[pos] = ca;
 							Space.Ages[pos]++;
 						} else {
@@ -244,20 +222,17 @@ namespace CA.Engine
 							Space.Ages[pos] = 0;
 						}
 					}
-					if(senescence && (Space.Ages[pos] != 0)) {
+					if(Senescence && (Space.Ages[pos] != 0)) {
 						Space.Ages[pos]++;
 						
-						if(Space.Ages[pos] == ageToDie) {
+						if(Space.Ages[pos] == AgeToDie) {
 							Space.Cells[pos] = cd;
 							Space.Ages[pos] = 0;
 						} else {
-							//double lambda = (float)Space.Ages[pos] * step;
-							//Color clr = ColorInterpolator.InterpolateBetween(cAlive, cOld, lambda);
-							//Space.Cells[pos] = clr.R<<16 + clr.G<<8 + clr.B;
-							Space.Cells[pos] = palette[Space.Ages[pos] - 1].ToArgb();
+                            var age = Space.Ages[pos] - 1;
+                            if (age >= 0 && age < Palette.Length)
+                                Space.Cells[pos] = Palette[age].ToArgb();
 						}
-					}
-					} catch(IndexOutOfRangeException) {
 					}
 				}
 			}
@@ -271,7 +246,7 @@ namespace CA.Engine
 		}
 
 		public void RefreshPalette(List<Gfx.Palette.GradientEditor.GradientStop> m) {
-			initPalette(m);
+			InitPalette(m);
 		}
 		
 	}

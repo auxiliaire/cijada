@@ -21,9 +21,6 @@ namespace CA.Engine
 		public bool[,] Vm { get; set; } = {{true, true, true}, {true, false, true}, {true, true, true}};
 		public int[] ToLive { get; set; } = {1, 2, 4, 6, 7, 8};
 		public int[] ToDie { get; set; } = {};
-		public bool[,] Rcb { get; set; } = {{true, true, true},
-                                            {true, true, true},
-                                            {true, true, true}};
 		private uint generations = 0;
 		public bool Overflow { get; set; } = false;
 
@@ -161,7 +158,6 @@ namespace CA.Engine
 			for(int  i = 0; i < 3; i++) {
 				for(int j = 0; j < 3; j++) {
 					Vm[i, j] = true;
-					Rcb[i, j] = true;
 				}
 			}
 			Vm[1, 1] = false;
@@ -193,17 +189,17 @@ namespace CA.Engine
 			int[] idCopy;
 			int k = 0;
 		    idCopy = (int[])Space.Cells.Clone();
-			for(int  a = 0; a < (w); a++) {
-				for(int b = 0; b < (h); b++) {
+			for(int  a = 0; a < w; a++) {
+				for(int b = 0; b < h; b++) {
 					k = 0;
-					if(Vm[0,0] && Rcb[0,0] && (a > 0 && b > 0 && idCopy[(a-1) + w * (b-1)] != cd)) { k++; }
-					if(Vm[0,1] && Rcb[0,1] && (b > 0 && idCopy[a + w * (b-1)] != cd)) { k++; }
-					if(Vm[0,2] && Rcb[0,2] && (b > 0 && a < maxW && idCopy[(a+1) + w * (b-1)] != cd)) { k++; }
-					if(Vm[1,0] && Rcb[1,0] && (a > 0 && idCopy[(a-1) + w * b] != cd)) { k++; }
-					if(Vm[1,2] && Rcb[1,2] && (a < maxW && idCopy[(a+1) + w * b] != cd)) { k++; }
-					if(Vm[2,0] && Rcb[2,0] && (a > 0 && b < maxH && idCopy[(a-1) + w * (b+1)] != cd)) { k++; }
-					if(Vm[2,1] && Rcb[2,1] && (b < maxH && idCopy[a + w * (b+1)] != cd)) { k++; }
-					if(Vm[2,2] && Rcb[2,2] && (a < maxW && b < maxH && idCopy[(a+1) + w * (b+1)] != cd)) { k++; }
+					if(Vm[0,0] && (a > 0 && b > 0 && idCopy[(a-1) + w * (b-1)] != cd)) { k++; }
+					if(Vm[0,1] && (b > 0 && idCopy[a + w * (b-1)] != cd)) { k++; }
+					if(Vm[0,2] && (b > 0 && a < maxW && idCopy[(a+1) + w * (b-1)] != cd)) { k++; }
+					if(Vm[1,0] && (a > 0 && idCopy[(a-1) + w * b] != cd)) { k++; }
+					if(Vm[1,2] && (a < maxW && idCopy[(a+1) + w * b] != cd)) { k++; }
+					if(Vm[2,0] && (a > 0 && b < maxH && idCopy[(a-1) + w * (b+1)] != cd)) { k++; }
+					if(Vm[2,1] && (b < maxH && idCopy[a + w * (b+1)] != cd)) { k++; }
+					if(Vm[2,2] && (a < maxW && b < maxH && idCopy[(a+1) + w * (b+1)] != cd)) { k++; }
 					int pos = a + w * b;
 					if (idCopy[pos] == cd) {
 						if(Contains(ToLive, k)) {

@@ -9,7 +9,8 @@
     <OutputType>WinExe</OutputType>
     <AssemblyName>Ca-2011</AssemblyName>
     <RootNamespace>CA</RootNamespace>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,6 +59,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>CA.CAForm</StartupObject>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="System" />
@@ -97,10 +101,19 @@
     <Compile Include="Model\Serializer\SState.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="Samples\conway.cac" />
+    <None Include="Samples\default.cac" />
+    <None Include="Samples\ulam.cac" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Samples\conway.jpg" />
+    <Content Include="Samples\default.jpg" />
+    <Content Include="Samples\photo.jpg" />
+    <Content Include="Samples\ulam.jpg" />
+  </ItemGroup>
 </Project>

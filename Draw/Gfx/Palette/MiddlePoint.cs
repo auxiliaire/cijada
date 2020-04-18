@@ -1,10 +1,10 @@
 namespace CA.Gfx.Palette
 {
-	public class MiddlePoint
-	{
-		public MiddlePoint ()
-		{
-		}
-	}
+    public class MiddlePoint
+    {
+        public MiddlePoint()
+        {
+        }
+    }
 }
 

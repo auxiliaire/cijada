@@ -1,6 +1,6 @@
 using System;
-using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace CA
 {
@@ -16,7 +16,8 @@ namespace CA
 			uint flags
 		);
 		[StructLayout(LayoutKind.Sequential)]
-		public struct Message {
+		public struct Message
+		{
 			public IntPtr hWnd;
 			public Int32 msg;
 			public IntPtr wParam;
@@ -26,24 +27,25 @@ namespace CA
 		}
 
 		public delegate void LoopCallback();
-        readonly LoopCallback _callback;
-		
+		readonly LoopCallback _callback;
+
 		public FastLoop(LoopCallback callback)
 		{
 			_callback = callback;
 			Application.Idle += new EventHandler(OnApplicationEnterIdle);
 		}
-		
+
 		void OnApplicationEnterIdle(object sender, EventArgs e)
 		{
-			while (IsAppStillIdle()) {
+			while (IsAppStillIdle())
+			{
 				_callback();
 			}
 		}
-		
+
 		private bool IsAppStillIdle()
 		{
-            return !PeekMessage(out Message msg, IntPtr.Zero, 0, 0, 0);
-        }
+			return !PeekMessage(out Message msg, IntPtr.Zero, 0, 0, 0);
+		}
 	}
 }

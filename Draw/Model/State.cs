@@ -1,10 +1,10 @@
 namespace CA.Model
 {
-	public class State
-	{
-		public State ()
-		{
-		}
-	}
+    public class State
+    {
+        public State()
+        {
+        }
+    }
 }
 

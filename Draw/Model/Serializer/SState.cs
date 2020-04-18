@@ -1,10 +1,10 @@
 namespace CA.Model.Serializer
 {
-	public class SState
-	{
-		public SState ()
-		{
-		}
-	}
+    public class SState
+    {
+        public SState()
+        {
+        }
+    }
 }
 
